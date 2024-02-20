@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const Restaurant = require("../models/index");
+const { Restaurant } = require("../models/index");
 const db = require("../db/connection");
 
 //TODO: Create your GET Request Route Below: 
@@ -19,20 +19,22 @@ app.get("/restaurants/:id", async (req, res) => {
     res.json(myRestaurant);
 });
 
-app.post('/restraunts', async (req,res) => {
+app.post('/restaurants', async (req,res) => {
     const restraunt = await Restaurant.create(req.body);
     res.json(restraunt);
 });
 
-app.put('/restraunts/:id', async (req,res) => {
+app.put('/restaurants/:id', async (req,res) => {
     const id = req.params.id;
-    const updatedRest = await Restaurant.update(req.body, {where: {id: id}});
-    res.json(updatedRest);
+    await Restaurant.update(req.body, {where: {id: id}, returning: true, plain: true});
+    const myRestaurant = await Restaurant.findByPk(id);
+    res.json(myRestaurant);
 });
 
-app.delete('/restraunts/:id', async (req,res) => {
+app.delete('/restaurants/:id', async (req,res) => {
     const id = req.params.id;
     const deletedRest = await Restaurant.destroy({where: {id: id}});
+    console.log(deletedRest)
     res.json(deletedRest);
 });
 
