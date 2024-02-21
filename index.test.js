@@ -55,6 +55,16 @@ describe('Restaurant Tests', () => {
             })
         );
     });
+    test('testing failed POST restaurant endpoint returns array of errors', async () => {
+        const res = await request(app)
+            .post('/restaurants')
+            .send({
+                name: 'test'
+            });
+        //expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('errors');
+        expect(Array.isArray(res.body.errors)).toBe(true);
+    });
     test('testing put restaurant endpoint', async () => {
         const res = await request(app)
             .put('/restaurants/' + 1)
